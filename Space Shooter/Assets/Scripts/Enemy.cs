@@ -6,6 +6,8 @@ public class Enemy : MonoBehaviour
 {
     [SerializeField] float speed = 10f;
 
+    [SerializeField] GameManager manager;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +22,7 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        GameManager.instance.IncreaseScore(10);
         Destroy(gameObject);
         Destroy(collision.gameObject);
     }
