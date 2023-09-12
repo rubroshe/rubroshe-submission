@@ -22,7 +22,15 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        GameManager.instance.IncreaseScore(10);
+        if (collision.gameObject.tag == "Player")
+        {
+            GameManager.instance.InitiateGameOver();
+        }
+        else
+        {
+            GameManager.instance.IncreaseScore(10); 
+        }
+        
         Destroy(gameObject);
         Destroy(collision.gameObject);
     }
