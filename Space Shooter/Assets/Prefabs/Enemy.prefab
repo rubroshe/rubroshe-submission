@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 7448341376868271686}
   - component: {fileID: 3638893249972950407}
   - component: {fileID: -8908421331291309940}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -99,7 +99,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 438d455e0456f344c8bda9b56973d0f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 15
+  speed: 4.45
+  manager: {fileID: 0}
+  laser: {fileID: 0}
+  health: 1
 --- !u!58 &3638893249972950407
 CircleCollider2D:
   m_ObjectHideFlags: 0

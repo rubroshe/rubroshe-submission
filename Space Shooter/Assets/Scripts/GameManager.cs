@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] GameObject gameOverText;
+    [SerializeField] Spawner eliteSpawn;
 
     private void Awake()
     {
@@ -38,6 +39,11 @@ public class GameManager : MonoBehaviour
     {
         score += amount;
         scoreText.text = "Score: " + score;
+        
+        if (score % 50 == 0)
+        {
+            eliteSpawn.spawnEliteEnemy();
+        }
     }
 
     public void InitiateGameOver()
@@ -45,4 +51,6 @@ public class GameManager : MonoBehaviour
         isGameOver = true;
         gameOverText.SetActive(true);
     }
+
+    
 }

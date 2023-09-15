@@ -25,4 +25,11 @@ public class Player : MonoBehaviour
             Instantiate(laser, transform.position, Quaternion.identity);
         }
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        GameManager.instance.InitiateGameOver();
+        Destroy(gameObject);
+        Destroy(collision.gameObject);
+    }
 }

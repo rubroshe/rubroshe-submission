@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1991159346461979341
+--- !u!1 &8773164559480245567
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,39 +8,40 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 116409515720654084}
-  - component: {fileID: 8255014282275447174}
-  - component: {fileID: 6607842406499494599}
-  - component: {fileID: 4689168984469009948}
-  m_Layer: 10
-  m_Name: Player Laser
-  m_TagString: Untagged
+  - component: {fileID: 4467322853834612605}
+  - component: {fileID: 766657405373785735}
+  - component: {fileID: 221751904239811844}
+  - component: {fileID: 4348257845168896944}
+  - component: {fileID: -8387189313402485571}
+  m_Layer: 8
+  m_Name: EliteEnemy
+  m_TagString: EliteEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &116409515720654084
+--- !u!4 &4467322853834612605
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1991159346461979341}
+  m_GameObject: {fileID: 8773164559480245567}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.03, y: -4.97, z: 0}
+  m_LocalPosition: {x: -0.77, y: 3.84, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &8255014282275447174
+--- !u!212 &766657405373785735
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1991159346461979341}
+  m_GameObject: {fileID: 8773164559480245567}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -75,37 +76,40 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: afd233faff396ca44b764cfa68cdec3e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7d09a5f126343474bbc132145f8b3028, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.09, y: 0.37}
+  m_Size: {x: 0.97, y: 0.84}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &6607842406499494599
+--- !u!114 &221751904239811844
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1991159346461979341}
+  m_GameObject: {fileID: 8773164559480245567}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab0a706056abc5044a1aed920714a224, type: 3}
+  m_Script: {fileID: 11500000, guid: 438d455e0456f344c8bda9b56973d0f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  laserSpeed: 15
---- !u!70 &4689168984469009948
-CapsuleCollider2D:
+  speed: 3
+  manager: {fileID: 0}
+  laser: {fileID: 560764529853804881, guid: 410819ce98ed74b4f92e072218bd7d0f, type: 3}
+  health: 4
+--- !u!58 &4348257845168896944
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1991159346461979341}
+  m_GameObject: {fileID: 8773164559480245567}
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
@@ -132,5 +136,32 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.09, y: 0.37}
-  m_Direction: 0
+  serializedVersion: 2
+  m_Radius: 0.56
+--- !u!50 &-8387189313402485571
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8773164559480245567}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
