@@ -12,6 +12,13 @@ public class GameSetup : MonoBehaviour
     [SerializeField] GameObject ballPrefab;
     [SerializeField] Transform cueBallPosition;
     [SerializeField] Transform headBallPosition;
+
+    // Awake is called before the Start method is called
+    private void Awake()
+    {
+
+    }
+
     // Start is called before the first frame update
     void Start()
     {
