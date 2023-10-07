@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     bool isWinningShotForPlayer2 = false;
     int player1BallsRemaining = 7;
     int player2BallsRemaining = 7;
+    bool isWaitingForBallMovementToStop = false;
 
     [SerializeField] TextMeshProUGUI player1BallsText;
     [SerializeField] TextMeshProUGUI player2BallsText;
@@ -27,20 +28,46 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] GameObject restartButton;
 
-    [SerializeField] Transform headPosition; 
+    [SerializeField] Transform headPosition;
+
+    [SerializeField] Camera cueStickCamera;
+    [SerializeField] Camera overheadCamera;
+    Camera currentCamera;
 
     // Start is called before the first frame update
     void Start()
     {
         currentPlayer = CurrentPlayer.Player1;
+        currentCamera = cueStickCamera;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (isWaitingForBallMovementToStop)
+        {
+            // Logic heere to check if balls are moving 
+            // when all balls have stopped moving, it can move to the net player's turn.
+        }
     }
     
+    public void SwitchCameras()
+    {
+        if (currentCamera == cueStickCamera)
+        {
+            cueStickCamera.enabled = false;
+            overheadCamera.enabled = true;
+            currentCamera = overheadCamera;
+        }
+        else
+        {
+            cueStickCamera.enabled = true;
+            overheadCamera.enabled = false;
+            currentCamera = cueStickCamera;
+            currentCamera.gameObject.GetComponent<CameraController>().ResetCamera();
+        }
+    }
+
     public void RestartTheGame()
     {
         SceneManager.LoadScene(0);
@@ -63,7 +90,8 @@ public class GameManager : MonoBehaviour
                 return true;
             }
         }
-        NextPlayerTurn();
+        //NextPlayerTurn(); 
+        isWaitingForBallMovementToStop = true;
         return false;
     }
 
@@ -143,7 +171,8 @@ public class GameManager : MonoBehaviour
                 }
                 if (currentPlayer != CurrentPlayer.Player1)
                 {
-                    NextPlayerTurn();
+                    //NextPlayerTurn();
+                    isWaitingForBallMovementToStop = true;
                 }
             }
             else
@@ -156,7 +185,8 @@ public class GameManager : MonoBehaviour
                 }
                 if (currentPlayer != CurrentPlayer.Player2)
                 {
-                    NextPlayerTurn();
+                    //NextPlayerTurn();
+                    isWaitingForBallMovementToStop = true;
                 }
             }
         }
