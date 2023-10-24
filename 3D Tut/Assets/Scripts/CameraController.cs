@@ -60,7 +60,7 @@ public class CameraController : MonoBehaviour
     {
         if (gameObject.GetComponent<Camera>().enabled)
         {
-             if (Input.GetButtonDown("Fire1") &&  !isTakingShot)
+             if (Input.GetButtonDown("Fire1") && !isTakingShot)
              {
                 isTakingShot = true;
                 savedMousePosition = 0f;
