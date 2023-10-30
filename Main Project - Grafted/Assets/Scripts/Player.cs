@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     float xPosition;
     float yPosition;
     [SerializeField] float health = 30f; // Serialize for now
+    [SerializeField] public float attackDamage = 1f;
     [SerializeField] GameObject sword; // Default weapon png
     [SerializeField] private GameObject swordSwoosh; // Swoosh texture prefab for sword (white)
     [SerializeField] private float attackInterval = 3f; // attack interval default for Player (non-weapon specified)

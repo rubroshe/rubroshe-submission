@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1847089057159403854}
   - component: {fileID: -2417158861053554}
   - component: {fileID: -5791009534241699601}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Enemy_2
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -104,7 +104,7 @@ MonoBehaviour:
   attackInt: 2
   attackDamage: 5
   attackCooldownTimer: 0.85
-  punchSwoosh: {fileID: 0}
+  punchSwoosh: {fileID: 620005763537647927, guid: af8ceac6f5c3d4f4daaabe053bebadd4, type: 3}
 --- !u!50 &-2417158861053554
 Rigidbody2D:
   serializedVersion: 4
