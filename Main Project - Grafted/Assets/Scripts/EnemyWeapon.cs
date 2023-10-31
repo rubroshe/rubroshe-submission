@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyWeapon : MonoBehaviour
+public class EnemyWeapon : MonoBehaviour // attached to Enemy's child weapon
 {
     bool enemyCanDealDamage = true;
-    public float enemyWeaponAttackDamage = 5f;
+    public float enemyWeaponAttackDamage; // 5 default for basic enemies
     // Start is called before the first frame update
     void Start()
     {
@@ -22,18 +22,15 @@ public class EnemyWeapon : MonoBehaviour
     {
         if (!enemyCanDealDamage) return;
 
-        if (character.CompareTag("Player") && this.GetComponent<Collider2D>() == GetComponent<Collider2D>())  // assuming your Player has the tag "Player"
+        if (character.CompareTag("Player"))  // assuming your Player has the tag "Player"
         {
             Player player = character.GetComponent<Player>(); // assuming your Player has a script called "Player"
             if (player != null)
-            {
-                Enemy enemy = GetComponentInParent<Enemy>();
-                if (enemy != null)
-                {
+            { 
                     Debug.Log("EnemyWeapon Strike!");
-                    player.TakeDamage(enemyWeaponAttackDamage + enemy.enemyAttackDamage); // get damage from enemy scrip[t
+                    player.TakeDamage(enemyWeaponAttackDamage); // get damage from enemy scrip[t
                     enemyCanDealDamage = false; // prevent further damage
-                }
+                
             }
         }
 

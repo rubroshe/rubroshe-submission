@@ -133,4 +133,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70d6a6bcd17df7a4cada8b397bc7f015, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyWeaponAttackDamage: 2
+  enemyWeaponAttackDamage: 5

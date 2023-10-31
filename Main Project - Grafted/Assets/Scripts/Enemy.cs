@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.Windows;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour // attached to Enemy Parent
 {
     [Header("Enemy Properties")]
     [SerializeField] float moveSpeed = 0.5f;
@@ -34,6 +34,7 @@ public class Enemy : MonoBehaviour
     private Vector3 lastSlashDirection = Vector3.zero; // Initialize with some default value.
     private float maxAttackDistance = 2.0f; // If enemy is out of range, dont attack
 
+    private Collider2D enemyCollider; // Grab enemy collider
 
     void Start()
     {
@@ -41,8 +42,9 @@ public class Enemy : MonoBehaviour
         xPosition = transform.position.x; // Grab the initial x pos
         yPosition = transform.position.y; // Grab the initial y pos 
         playerTransform = player.transform; // Assumes your player object has the tag "Player"
-        
-        
+        enemyCollider = GetComponent<Collider2D>(); 
+
+
     }
 
     void Update()
@@ -90,14 +92,15 @@ public class Enemy : MonoBehaviour
         if (playerTransform != null)
         {
             // Move enemy towards the player
-            transform.position = Vector3.MoveTowards(transform.position, playerTransform.position, moveSpeed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, playerTransform.position + new Vector3(0, 0.25f, 0), moveSpeed * Time.deltaTime);
         }
     }
 
+    // =========================================================================================================
     private void OnTriggerEnter2D(Collider2D other)
     {
         // Check if the collided object is the player
-        if (other.CompareTag("Player") && this.GetComponent<Collider2D>() == GetComponent<Collider2D>())
+        if (other.CompareTag("Player") && this.GetComponent<Collider2D>() == enemyCollider)
         {
             Debug.Log("Collision Detected");
             isInsideTrigger = true;
@@ -118,12 +121,13 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Player") && this.GetComponent<Collider2D>() == GetComponent<Collider2D>())
+        if (other.CompareTag("Player") && this.GetComponent<Collider2D>() == enemyCollider)
         {
             Debug.Log("Collision has ended");
             isInsideTrigger = false;
-           // initialAttack = false;
+            // initialAttack = false;
         }
+        else return; 
     }
 
     /* void OnTriggerStay2D(Collider2D other)
@@ -157,24 +161,11 @@ public class Enemy : MonoBehaviour
         isAttackingCollision = false;
     }
 
-    public void TakeDamage(float damageAmount)
-    {
-        enemyHealth -= damageAmount;
-        if (enemyHealth <= 0)
-        {
-            // Enemy dies, handle death logic here (like playing a death animation or destroying the enemy)
-            Die();
-        }
-    }
 
-    void Die()
-    {
-        // Destroy the enemy (play death animation later)
-        Destroy(gameObject);
-    }
+   // ==================================================================================================
 
     // ENEMY CAN NOW ATTACK PLAYER
-    void Attack()
+    void Attack() // Instantiates a slash effect to deal damage to Player
     {
         // Directional logic
         Vector3 enemySlashDirection = DetermineEnemySlashDirection();
@@ -226,14 +217,14 @@ public class Enemy : MonoBehaviour
 
         // Instantiate the slash effect
         GameObject enemySwoosh = Instantiate(punchSwoosh, transform.position + offset, Quaternion.Euler(enemySlashDirection));
-        enemySwoosh.transform.SetParent(transform);
+       // enemySwoosh.transform.SetParent(transform);
 
 
         // Destroy the swoosh after a short duration (e.g., 0.5 seconds)
-        Destroy(enemySwoosh, 0.5f);
+        Destroy(enemySwoosh, 0.25f);
     }
 
-    Vector3 DetermineEnemySlashDirection()
+    Vector3 DetermineEnemySlashDirection() // calculate direction of slash based on which way enemy is facing currently
     {
         // Convert the last input direction into Euler angles for rotation.
         if (Vector2.Distance(movementDirection, Vector2.right) < 0.255f) {
@@ -280,4 +271,21 @@ public class Enemy : MonoBehaviour
         // Default to last known direction if no direction is found (or can use a previous direction).
         return lastSlashDirection;
     }
+
+    public void TakeDamage(float damageAmount)
+    {
+        enemyHealth -= damageAmount;
+        if (enemyHealth <= 0)
+        {
+            // Enemy dies, handle death logic here (like playing a death animation or destroying the enemy)
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        // Destroy the enemy (play death animation later)
+        Destroy(gameObject);
+    }
+
 }
