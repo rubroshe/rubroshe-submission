@@ -19,8 +19,8 @@ TagManager:
   - PlayerAttack
   - EnemyAttack
   - Player
-  - 
-  - 
+  - Wall
+  - Projectiles
   - 
   - 
   - 

@@ -1,23 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    enum Ability {Health, Speed, AttackSpeed, Dash}
     float xPosition;
     float yPosition;
-    [SerializeField] float health = 30f; // Serialize for now
+
+    [SerializeField] float currentHealth, maxHealth;
+    [SerializeField] int currentExperience,
+        maxExperience,
+        currentLevel;
     [SerializeField] public float attackDamage = 1f;
     [SerializeField] GameObject sword; // Default weapon png
+    [SerializeField] GameObject dagger; // Dagger png
     [SerializeField] private GameObject swordSwoosh; // Swoosh texture prefab for sword (white)
     [SerializeField] private float attackInterval = 3f; // attack interval default for Player (non-weapon specified)
     private float nextAttackTime = 0f; // When the next attack can happen (similar to dash)
-
+    public static float projectileSpeed = 5.5f;
+    public static int projectileAmount = 1;
+    public static int projectileDamage = 2;
 
     [SerializeField] float moveSpeed = 3f;
-    // private Rigidbody2D rb; not needed, just had "Horizontal" twice
-
+    
     public float dashSpeed = 8f; // speed of the dash/how far player goes - 8 to 10 is good for upgrade later
     public float dashDuration = 0.12f; // how long dash effect lasts
     private Vector2 lastDirection = Vector2.right; // Default to right if Player hasn't moved yet
@@ -25,26 +31,44 @@ public class Player : MonoBehaviour
     [SerializeField] public float dashCooldown = 3f; // Time in secs before player can dash again
     [SerializeField] private float nextDashTime = 0f; // Time when the player can next dash
 
+    Vector2 movement;
+    public Rigidbody2D rb;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        Ability myAbility = Ability.Health;
         xPosition = transform.position.x; // Grab the initial x pos
         yPosition = transform.position.y; // Grab the initial y pos 
 
     }
 
+
+    public Animator animator; 
+
+
     // Update is called once per frame
     void Update()
     {
+        //     animator.SetFloat("Horizontal", Input.GetAxis("Horizontal"));
+        //    animator.SetFloat("Vertical", Input.GetAxis("Vertical"));
+
+        movement.x = Input.GetAxisRaw("Horizontal");
+        movement.y = Input.GetAxisRaw("Vertical");
+
+        if (!PauseMenu.isPaused)
+        {
+            animator.SetFloat("Horizontal", movement.x);
+            animator.SetFloat("Vertical", movement.y);
+            animator.SetFloat("Speed", movement.sqrMagnitude);
+        }
 
         float xInput = Input.GetAxisRaw("Horizontal");
         float yInput = Input.GetAxisRaw("Vertical");
 
-        Vector2 direction = new Vector2(xInput, yInput).normalized;
+       // Vector2 direction = new Vector2(xInput, yInput).normalized;
 
-        transform.position += new Vector3(direction.x, direction.y, 0) * moveSpeed * Time.deltaTime;
+       // transform.position += new Vector3(direction.x, direction.y, 0) * moveSpeed * Time.deltaTime;
 
         // Track last direction if there's been movement
         if (xInput != 0 || yInput != 0)
@@ -66,6 +90,14 @@ public class Player : MonoBehaviour
             nextAttackTime = Time.time + attackInterval;
         }
 
+    }
+
+    private void FixedUpdate()
+    {
+        if (!PauseMenu.isPaused)
+        {
+            rb.MovePosition(rb.position + movement.normalized * moveSpeed * Time.fixedDeltaTime);
+        }
     }
 
     IEnumerator Dash()
@@ -128,10 +160,15 @@ public class Player : MonoBehaviour
         // Instantiate the slash effect
         GameObject swoosh = Instantiate(swordSwoosh, transform.position + offset, Quaternion.Euler(slashDirection));
         swoosh.transform.SetParent(transform);
+        if (currentLevel >= 3)
+        {
+            Instantiate(dagger, transform.position + new Vector3(0, 0.35f, 0), Quaternion.Euler(slashDirection - new Vector3(0, 0, 90)));
+        }
+       
 
 
         // Destroy the swoosh after a short duration (e.g., 0.5 seconds)
-        Destroy(swoosh, 0.5f);
+      //  Destroy(swoosh, 0.25f); Now handled in animator
     }
 
     Vector3 DetermineSlashDirection()
@@ -155,13 +192,88 @@ public class Player : MonoBehaviour
 
     public void TakeDamage(float damageAmount)
     {
-        health -= damageAmount;
-        if (health <= 0)
+        currentHealth -= damageAmount;
+        if (currentHealth <= 0)
         {
             // Player dies, handle death logic here (like playing a death animation or restarting the level)
             // For now, just disable the Player object:
-            gameObject.SetActive(false);
+            Destroy(gameObject);
+            GameManager.instance.InitiateGameOver();
             // add something for Game Over UI
         }
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log("Hit a Wall");
+    }
+
+    private void OnEnable()
+    {
+        if (ExperienceManager.Instance != null)
+        {
+            // Subscribe Event
+            ExperienceManager.Instance.OnExperienceChange += HandleExperienceChange;
+        }
+        else
+        {
+            Debug.LogWarning("ExperienceManager.Instance is null in OnEnable.");
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (ExperienceManager.Instance != null)
+        {
+            // Unsubscribing from Event 
+            ExperienceManager.Instance.OnExperienceChange -= HandleExperienceChange;
+        }
+        else
+        {
+            Debug.LogWarning("ExperienceManager.Instance is null in OnDisable.");
+        }
+    }
+
+    private void HandleExperienceChange(int newExperience)
+    {
+        currentExperience += newExperience;
+        if (currentExperience >= maxExperience)
+        {
+            LevelUp(); // Show UI element that says leveled up
+        }
+    }
+
+    private void LevelUp()
+    {
+
+        maxHealth += 10;
+        currentHealth = maxHealth;  // Make random stats pool to choose from and text element that says "+_% [STAT]"
+                                    // Dagger
+         // Dagger.instance.DaggerDelay -= 1;
+
+        // if statements of Random.Range AMT% buff for each buff
+        // Array at Start of Ability which stat got chosen. of how many abilities/buffs there are. 
+        // List integers that matches Abilities in Start Array
+        // another Array [Cap 3] - 3 getting pulled from List - List pulls from ALL available Ability - pulled Ability gets deleted from pool 
+        // Reset List to equal entire Array to restart process.
+        // Method for all 3 buttons. public void that takes integer. 
+        // In Player class, if 0, means left button, 1 middle, 2 right. What's the '1' in the list? could be '6' which could mean SPD buff
+        // Choose Ability from array , save #s in array 
+        // Button looks inside array for what to display
+        // All 3 buttons use same method
+
+
+        currentLevel++;
+        GameManager.instance.IncreaseLevel(currentLevel);
+        currentExperience = 0;
+
+        if (currentLevel % 2 == 0)
+        {
+            maxExperience += 100;
+        }
+        else
+        {
+            maxExperience += 200;
+        }
+
     }
 }

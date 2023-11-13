@@ -19,6 +19,8 @@ public class Enemy : MonoBehaviour // attached to Enemy Parent
     float yPosition;
     [SerializeField] private float enemyAttackInterval = 4f; // attack interval default for Enemy (non-weapon specified)
     private float enemyNextAttackTime = 0f; // When the next attack can happen (similar to dash)
+    [SerializeField] int scoreValue;
+    [SerializeField] int expAmount;
 
     [Header("References")]
     [SerializeField] GameObject punchSwoosh; // Swoosh texture for enemy attacks
@@ -35,6 +37,9 @@ public class Enemy : MonoBehaviour // attached to Enemy Parent
     private float maxAttackDistance = 2.0f; // If enemy is out of range, dont attack
 
     private Collider2D enemyCollider; // Grab enemy collider
+    public Rigidbody2D rb;
+    [SerializeField] GameManager manager;
+    private Animator animator;
 
     void Start()
     {
@@ -43,7 +48,8 @@ public class Enemy : MonoBehaviour // attached to Enemy Parent
         yPosition = transform.position.y; // Grab the initial y pos 
         playerTransform = player.transform; // Assumes your player object has the tag "Player"
         enemyCollider = GetComponent<Collider2D>(); 
-
+        rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>(); 
 
     }
 
@@ -56,7 +62,10 @@ public class Enemy : MonoBehaviour // attached to Enemy Parent
         
         PursuePlayer();
         
-
+        if (GameManager.instance.isGameOver) 
+        {
+            return; 
+        }
         // Attack timer logic to check for collision 
         if (isInsideTrigger && !isAttackingCollision)
         {
@@ -221,7 +230,7 @@ public class Enemy : MonoBehaviour // attached to Enemy Parent
 
 
         // Destroy the swoosh after a short duration (e.g., 0.5 seconds)
-        Destroy(enemySwoosh, 0.25f);
+        Destroy(enemySwoosh, 0.2f);
     }
 
     Vector3 DetermineEnemySlashDirection() // calculate direction of slash based on which way enemy is facing currently
@@ -275,6 +284,7 @@ public class Enemy : MonoBehaviour // attached to Enemy Parent
     public void TakeDamage(float damageAmount)
     {
         enemyHealth -= damageAmount;
+        animator.SetTrigger("Flash");
         if (enemyHealth <= 0)
         {
             // Enemy dies, handle death logic here (like playing a death animation or destroying the enemy)
@@ -284,6 +294,9 @@ public class Enemy : MonoBehaviour // attached to Enemy Parent
 
     void Die()
     {
+        GameManager.instance.IncreaseScore(scoreValue);
+
+        ExperienceManager.Instance.AddExperience(expAmount);
         // Destroy the enemy (play death animation later)
         Destroy(gameObject);
     }

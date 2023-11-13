@@ -7,10 +7,13 @@ public class PlayerWeapon : MonoBehaviour
    // [SerializeField] public Player player;
     bool canDealDamage = true;
     public float playerWeaponAttackDamage = 1f;
+    private Player player;
+    [SerializeField] float knockBack;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
     }
 
     // Update is called once per frame
@@ -23,21 +26,25 @@ public class PlayerWeapon : MonoBehaviour
     {
         if (!canDealDamage) return; 
 
-        if (other.CompareTag("Enemy"))  // assuming your enemies have the tag "Enemy"
+        if (other.gameObject.CompareTag("Enemy"))  // assuming your enemies have the tag "Enemy"
         {
-            Enemy enemy = other.GetComponent<Enemy>(); // assuming your enemy has a script called "Enemy"
+            Enemy enemy = other.gameObject.GetComponent<Enemy>(); // assuming your enemy has a script called "Enemy"
             if (enemy != null)
             {
-                // Access the player's attack damage using GetComponent.
-                Player player = GetComponentInParent<Player>();
-                if (player != null)
-                {
-
-                    enemy.TakeDamage(player.attackDamage); // you'd fetch this damage value from the player's sword script
-                    canDealDamage = false; // prevent further damage
-                }
+                Debug.Log("Player Weapon strike!");
+                Vector2 direction = (other.gameObject.transform.position - player.transform.position).normalized;
+                enemy.rb.AddForce(direction * knockBack, ForceMode2D.Impulse);
+                enemy.TakeDamage(playerWeaponAttackDamage); 
+               // canDealDamage = false; // prevent further damage
             }
         }
 
     } 
+
+    public void KillSelf()
+    {
+        Destroy(gameObject);
+    }
+
+   
 }

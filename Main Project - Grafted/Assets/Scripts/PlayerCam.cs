@@ -12,6 +12,10 @@ public class PlayerCam : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
+        if (trackingTarget == null)
+        {
+            return;
+        }
         Vector3 targetPosition = new Vector3(trackingTarget.position.x + offset.x, trackingTarget.position.y + offset.y, transform.position.z);
         transform.position = Vector3.Lerp(transform.position, targetPosition, cameraSpeed);
     }
