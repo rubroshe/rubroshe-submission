@@ -100,11 +100,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 680ed961f666d7141b2494dcdfd234c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 0.5
-  enemyHealth: 100
+  moveSpeed: 0.6
+  enemyHealth: 40
   enemyAttackDamage: 50
   collisionAttackCooldownTimer: 0.85
-  enemyAttackInterval: 0.81
+  enemyAttackInterval: 3.03
   scoreValue: 100
   expAmount: 500
   punchSwoosh: {fileID: 6142843014342300066, guid: dd8bbd8388cfef74c8e06d4b1bc81d44, type: 3}
@@ -166,7 +166,7 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}

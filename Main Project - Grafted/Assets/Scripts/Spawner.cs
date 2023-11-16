@@ -13,6 +13,8 @@ public class Spawner : MonoBehaviour
   //  [SerializeField] GameObject enemyPrefab;
     [SerializeField] List<GameObject> enemyPrefabs = new List<GameObject>();
     private bool isBossSpawned = false;
+    public float timePassed = 0;
+    private float timeAtStart;
 
     private float spawnDelaySeconds1 = 3; // delay between each grouping for Enemy_1
     private float spawnDelaySeconds2 = 5; // delay between each grouping for Enemy_2
@@ -26,12 +28,12 @@ public class Spawner : MonoBehaviour
     private float counter1 = 0; // how many times coroutine has gone for Enemy_1
     private float counter2 = 0; // how many times coroutine has gone for Enemy_2
     private float counter3 = 0; // how many times coroutine has gone for Enemy_3
-
+    
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        timeAtStart = Time.time;
     }
 
     // Update is called once per frame
@@ -42,12 +44,12 @@ public class Spawner : MonoBehaviour
             StartCoroutine(SpawnEnemy1());
         }
 
-        if (canSpawnEnemy2 && !isBossSpawned && Time.time > 60)
+        if (canSpawnEnemy2 && !isBossSpawned && Time.time - timeAtStart > 60)
         {
             StartCoroutine (SpawnEnemy2());
         }
 
-        if (canSpawnEnemy3 && !isBossSpawned && Time.time > 120)
+        if (canSpawnEnemy3 && !isBossSpawned && Time.time - timeAtStart > 120)
         {
             StartCoroutine(SpawnEnemy3());
         }
@@ -75,7 +77,7 @@ public class Spawner : MonoBehaviour
 
            
            
-            if (Time.time >= 300 && isBossSpawned == false)
+            if (Time.time - timeAtStart >= 300 && isBossSpawned == false) // 300
             {
                 isBossSpawned = true;
                 GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy"); // Kill all enemies and their effects  (add dying animation [in enemy die()] if possible)
@@ -121,9 +123,9 @@ public class Spawner : MonoBehaviour
         yield return new WaitForSeconds(2);
         canSpawnEnemy1 = true;
 
-        if (counter1 % 1 == 0) // if Coroutine has been iterated over 4 times... enemies spawn more frequently, enemiesPerGroup decrease
+        if (counter1 % 1 == 0) // if Coroutine has been iterated over 1 times... enemies spawn more frequently, enemiesPerGroup decrease
         {
-            float enemiesPerGroupNew = enemiesPerGroup1 * 1.25f;
+            float enemiesPerGroupNew = enemiesPerGroup1 * 1.5f;
             spawnDelaySeconds1 /= (enemiesPerGroupNew / enemiesPerGroup1);
 
             enemiesPerGroup1 = Mathf.RoundToInt(enemiesPerGroupNew);

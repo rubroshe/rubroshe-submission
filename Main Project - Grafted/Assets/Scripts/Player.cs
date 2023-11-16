@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -20,7 +21,12 @@ public class Player : MonoBehaviour
     private float nextAttackTime = 0f; // When the next attack can happen (similar to dash)
     public static float projectileSpeed = 5.5f;
     public static int projectileAmount = 1;
-    public static int projectileDamage = 2;
+    public static float projectileDamage = 1.5f;
+
+    private bool level5BuffApplied = false;
+    private bool level8BuffApplied = false;
+    private bool level10BuffApplied = false;
+
 
     [SerializeField] float moveSpeed = 3f;
     
@@ -33,6 +39,8 @@ public class Player : MonoBehaviour
 
     Vector2 movement;
     public Rigidbody2D rb;
+    [SerializeField] Image healthBar;
+    [SerializeField] Image experienceBar;
 
     // Start is called before the first frame update
     void Start()
@@ -160,15 +168,62 @@ public class Player : MonoBehaviour
         // Instantiate the slash effect
         GameObject swoosh = Instantiate(swordSwoosh, transform.position + offset, Quaternion.Euler(slashDirection));
         swoosh.transform.SetParent(transform);
-        if (currentLevel >= 3)
+
+        switch (currentLevel)
         {
-            Instantiate(dagger, transform.position + new Vector3(0, 0.35f, 0), Quaternion.Euler(slashDirection - new Vector3(0, 0, 90)));
+            case int level when level >= 10:
+                if (!level10BuffApplied)
+                {
+                    moveSpeed++;
+                    level10BuffApplied = true;
+                }
+                StartCoroutine(SpawnDaggers(new Vector3(0, 0.35f, 0), slashDirection - new Vector3(0, 0, 90), 4, 0.2f));
+                break;
+
+            case int level when level >= 8:
+                if (!level8BuffApplied)
+                {
+                    attackDamage += 1.5f;
+                    level8BuffApplied = true;
+                }
+                // If level is 8 or greater, spawn 3 daggers
+                StartCoroutine(SpawnDaggers(new Vector3(0, 0.35f, 0), slashDirection - new Vector3(0, 0, 90), 3, 0.25f));
+                break; // Prevents the code for lower levels from running
+
+            case int level when level >= 5:
+                if (!level5BuffApplied)
+                {
+                    attackInterval -= attackInterval * 0.10f;
+                    level5BuffApplied = true;
+                }
+                // If level is 5 or greater but less than 8, spawn 2 daggers
+                StartCoroutine(SpawnDaggers(new Vector3(0, 0.35f, 0), slashDirection - new Vector3(0, 0, 90), 2, 0.25f));
+                break;
+
+            case int level when level >= 3:
+                // If level is 3 or greater but less than 5, spawn 1 dagger
+                StartCoroutine(SpawnDaggers(new Vector3(0, 0.35f, 0), slashDirection - new Vector3(0, 0, 90), 1, 0.25f));
+                break;
+
+
+                default: break;
         }
-       
 
 
         // Destroy the swoosh after a short duration (e.g., 0.5 seconds)
       //  Destroy(swoosh, 0.25f); Now handled in animator
+    }
+
+    IEnumerator SpawnDaggers(Vector3 spawnOffset, Vector3 rotationOffset, int numberOfDaggers, float delay)
+    {
+        for (int i = 0; i < numberOfDaggers; i++)
+        {
+            // Instantiate the dagger at the specified offset and rotation
+            Instantiate(dagger, transform.position + spawnOffset, Quaternion.Euler(rotationOffset));
+
+            // Wait for the specified delay before spawning the next dagger
+            yield return new WaitForSeconds(delay);
+        }
     }
 
     Vector3 DetermineSlashDirection()
@@ -193,6 +248,8 @@ public class Player : MonoBehaviour
     public void TakeDamage(float damageAmount)
     {
         currentHealth -= damageAmount;
+        healthBar.fillAmount = currentHealth / 100f;
+        // healthBar.fillAmount = currentHealth / 100f;
         if (currentHealth <= 0)
         {
             // Player dies, handle death logic here (like playing a death animation or restarting the level)
@@ -236,6 +293,8 @@ public class Player : MonoBehaviour
     private void HandleExperienceChange(int newExperience)
     {
         currentExperience += newExperience;
+        experienceBar.fillAmount = (float)currentExperience / maxExperience;
+        Debug.Log("exp bar amt: " + experienceBar.fillAmount);
         if (currentExperience >= maxExperience)
         {
             LevelUp(); // Show UI element that says leveled up
@@ -244,8 +303,8 @@ public class Player : MonoBehaviour
 
     private void LevelUp()
     {
-
-        maxHealth += 10;
+        experienceBar.fillAmount = 0;
+        maxHealth += 25;
         currentHealth = maxHealth;  // Make random stats pool to choose from and text element that says "+_% [STAT]"
                                     // Dagger
          // Dagger.instance.DaggerDelay -= 1;

@@ -120,7 +120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2713efd283de67047bc855da4927e670, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerWeaponAttackDamage: 1
+  playerWeaponAttackDamage: 2
   knockBack: 3.5
 --- !u!70 &5386829935302805449
 CapsuleCollider2D:

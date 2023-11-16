@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     int kills;
     public bool isGameOver = false;
     public bool isFightingBoss = false;
-    [SerializeField] float winTime = 600f; // 10 minutes 
+    [SerializeField] float winTime = 300f; // 5 minutes 
     private float gameTimer = 0f;
     public static float elapsedTime;
 
@@ -25,6 +25,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject gameWinText;
     [SerializeField] TextMeshProUGUI gameTimerText;
     [SerializeField] TextMeshProUGUI currentLevelText;
+
+
     private void Awake()
     {
         instance = this;
@@ -67,8 +69,15 @@ public class GameManager : MonoBehaviour
 
         if (isFightingBoss)
         {
-            if (GameObject.FindGameObjectWithTag("Enemy") == null)
+            if (GameObject.FindGameObjectWithTag("Player") == null)
             {
+                
+                InitiateGameOver();
+               
+            }
+            else if (GameObject.FindGameObjectWithTag("Enemy") == null)
+            {
+                
                 InitiateGameWin();
             }
         }
@@ -110,13 +119,14 @@ public class GameManager : MonoBehaviour
     public void InitiateBossFight()
     {
         isFightingBoss = true;
-        string textTime2 = string.Format("{0:00}:{1:00}", 3, 0);
+        string textTime2 = string.Format("{0:00}:{1:00}", 5, 0);
         
         gameTimerText.text = textTime2;
         
     }
     public void InitiateGameOver()
     {
+        isFightingBoss = false;
         isGameOver = true;
         Time.timeScale = 0; // stops time in the game
         gameOverText.SetActive(true); // show game over text
@@ -126,7 +136,7 @@ public class GameManager : MonoBehaviour
 
     public void InitiateGameWin()
     {
-        
+        isFightingBoss = false;
         isGameOver = true;
         Time.timeScale = 0; 
         gameWinText.SetActive(true);
